@@ -799,6 +799,9 @@ function hurtPlayer(p, dmg, src) {
 /* =========================================================
    DOWNED / REVIVE
    ========================================================= */
+const REVIVE_RANGE = 60;     // px a living partner must close to lift them
+const REVIVE_TIME = 3;       // seconds of contact to complete the lift
+const REVIVE_HP_FRAC = 0.4;  // vitality restored on the lift
 
 function downPlayer(p) {
   p.hp = 0; const partnerUp = players.some(o => o !== p && o.hp > 0 && !o.downed); if (!partnerUp) { gameOver(); return; }
