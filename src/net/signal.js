@@ -4,11 +4,13 @@
    code, guest posts the answer, both trade ICE candidates, and the
    room is deleted the moment the DataChannel opens.
 
-   RTDB layout:
-     /rooms/<CODE>/host  { v, createdAt, offer }
-     /rooms/<CODE>/guest { v, answer }
-     /rooms/<CODE>/hc/<push>  host ICE candidate (JSON string)
-     /rooms/<CODE>/gc/<push>  guest ICE candidate (JSON string)
+   RTDB layout (under ROOMS_ROOT — `rooms_v1` on this build, kept
+   deliberately distinct from the newer build's plain `rooms` tree so
+   the two never collide on one database):
+     /<ROOMS_ROOT>/<CODE>/host  { v, createdAt, offer }
+     /<ROOMS_ROOT>/<CODE>/guest { v, answer }
+     /<ROOMS_ROOT>/<CODE>/hc/<push>  host ICE candidate (JSON string)
+     /<ROOMS_ROOT>/<CODE>/gc/<push>  guest ICE candidate (JSON string)
    ========================================================= */
 "use strict";
 
@@ -17,6 +19,11 @@ const Signal = {
   ALPHABET: "ABCDEFGHJKLMNPQRSTUVWXYZ23456789",
   CODE_LEN: 5,
   ROOM_TTL_MS: 10 * 60 * 1000,
+  /* the branch of the database this build's rooms live under. The newer build
+     uses `rooms`; this one uses `rooms_v1` so both can share one Firebase
+     project without their join codes (or their different room schemas) ever
+     colliding. One-line change if you'd rather isolate by project instead. */
+  ROOMS_ROOT: "rooms_v1",
 
   app: null, db: null,
   code: null,
@@ -150,7 +157,7 @@ const Signal = {
     return c;
   },
 
-  roomRef(code) { return this.db.ref("rooms/" + code); },
+  roomRef(code) { return this.db.ref(this.ROOMS_ROOT + "/" + code); },
 
   /* HOST: claim a fresh code (retry on collision with a live room) and
      post the offer. Returns the code. */

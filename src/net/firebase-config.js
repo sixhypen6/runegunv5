@@ -5,23 +5,29 @@
    all game traffic is phone-to-phone.
 
    SETUP (one time):
-   1. console.firebase.google.com → Add project (no Analytics needed)
-   2. Build → Realtime Database → Create database → locked mode
-   3. Rules tab → paste the contents of firebase.rules.json (repo root)
-   4. Project settings → Your apps → Web app (</>) → copy the config
-      object over the placeholder below (these values are public
-      identifiers, not secrets — shipping them in source is normal)
+   1. console.firebase.google.com → project `runegunp`
+   2. Build → Realtime Database → Rules → paste firebase.rules.json (repo root)
+   3. Project settings → Your apps → Web app (</>) → the config below
+      (these values are public identifiers, not secrets — shipping them
+      in source is normal)
+
+   DISTINCT LOCATION: this build signals under <ROOMS_ROOT> in signal.js
+   (default `rooms_v1`), NOT the plain `rooms` tree. The newer build owns
+   `rooms`; keeping this one on its own branch of the database means the two
+   versions can share one Firebase project without their join codes ever
+   colliding or one build reading the other's handshake. See firebase.rules.json,
+   which mirrors the `rooms` validation block under `rooms_v1` for exactly this.
    ========================================================= */
 "use strict";
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDWN7DsOAoMU3wfD47Epx5UDUNGJ0-6Ebg",
-  authDomain: "runegun-8b5b2.firebaseapp.com",
-  databaseURL: "https://runegun-8b5b2-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "runegun-8b5b2",
-  storageBucket: "runegun-8b5b2.firebasestorage.app",
-  messagingSenderId: "30857778312",
-  appId: "1:30857778312:web:51190fd9b8ba60bbdcfb3d",
+  apiKey: "AIzaSyAYNwA6RzUEbfyCWqbT3P27ti705QGfL2c",
+  authDomain: "runegunp.firebaseapp.com",
+  databaseURL: "https://runegunp-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "runegunp",
+  storageBucket: "runegunp.firebasestorage.app",
+  messagingSenderId: "867814511521",
+  appId: "1:867814511521:web:fd00305baa3dce103ef1e0",
 };
 /* measurementId is deliberately omitted — no Analytics SDK is loaded, so it
    would be dead weight. storageBucket / messagingSenderId are unused too, but

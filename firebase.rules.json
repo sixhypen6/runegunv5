@@ -1,0 +1,404 @@
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChild('host')",
+        "host": {
+          ".validate": "newData.hasChildren(['v', 'createdAt'])",
+          "v": { ".validate": "newData.isNumber()" },
+          "createdAt": { ".validate": "newData.isNumber()" },
+          "open": { ".validate": "newData.isBoolean()" },
+          "offer": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+        },
+        "joins": {
+          "$jid": {
+            ".validate": "newData.hasChildren(['v', 'at'])",
+            "v": { ".validate": "newData.isNumber()" },
+            "at": { ".validate": "newData.isNumber()" }
+          }
+        },
+        "peers": {
+          "$jid": {
+            "offer": {
+              ".validate": "newData.hasChildren(['v', 'sdp'])",
+              "v": { ".validate": "newData.isNumber()" },
+              "sdp": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+            },
+            "answer": {
+              ".validate": "newData.hasChildren(['v', 'sdp'])",
+              "v": { ".validate": "newData.isNumber()" },
+              "sdp": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+            },
+            "hc": {
+              "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+            },
+            "gc": {
+              "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+            },
+            "reject": { ".validate": "newData.isString() && newData.val().length <= 16" }
+          }
+        },
+        "guest": {
+          ".validate": "newData.hasChildren(['v', 'answer'])",
+          "v": { ".validate": "newData.isNumber()" },
+          "answer": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+        },
+        "hc": {
+          "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+        },
+        "gc": {
+          "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+        }
+      }
+    },
+    "rooms_v1": {
+      "$code": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChild('host')",
+        "host": {
+          ".validate": "newData.hasChildren(['v', 'createdAt'])",
+          "v": { ".validate": "newData.isNumber()" },
+          "createdAt": { ".validate": "newData.isNumber()" },
+          "open": { ".validate": "newData.isBoolean()" },
+          "offer": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+        },
+        "joins": {
+          "$jid": {
+            ".validate": "newData.hasChildren(['v', 'at'])",
+            "v": { ".validate": "newData.isNumber()" },
+            "at": { ".validate": "newData.isNumber()" }
+          }
+        },
+        "peers": {
+          "$jid": {
+            "offer": {
+              ".validate": "newData.hasChildren(['v', 'sdp'])",
+              "v": { ".validate": "newData.isNumber()" },
+              "sdp": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+            },
+            "answer": {
+              ".validate": "newData.hasChildren(['v', 'sdp'])",
+              "v": { ".validate": "newData.isNumber()" },
+              "sdp": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+            },
+            "hc": {
+              "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+            },
+            "gc": {
+              "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+            },
+            "reject": { ".validate": "newData.isString() && newData.val().length <= 16" }
+          }
+        },
+        "guest": {
+          ".validate": "newData.hasChildren(['v', 'answer'])",
+          "v": { ".validate": "newData.isNumber()" },
+          "answer": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16000" }
+        },
+        "hc": {
+          "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+        },
+        "gc": {
+          "$cand": { ".validate": "newData.isString() && newData.val().length <= 2000" }
+        }
+      }
+    },
+    "open": {
+      ".read": true,
+      "$code": {
+        ".write": true,
+        ".validate": "root.child('rooms').child($code).child('host').exists() && newData.hasChildren(['v', 'mode', 'char', 'skin', 'seats', 'at'])",
+        "v": { ".validate": "newData.isNumber()" },
+        "mode": { ".validate": "newData.isString() && newData.val().length <= 16" },
+        "char": { ".validate": "newData.isString() && newData.val().length <= 32" },
+        "skin": { ".validate": "newData.isString() && newData.val().length <= 32" },
+        "seats": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4" },
+        "at": { ".validate": "newData.isNumber()" }
+      }
+    },
+    "console": {
+      "coop": {
+        ".read": true,
+        ".write": false,
+        ".validate": "newData.isString() && newData.val().length === 64"
+      },
+      "john": {
+        ".read": true,
+        ".write": false,
+        ".validate": "newData.isString() && newData.val().length === 64"
+      },
+      "nacho": {
+        ".read": true,
+        ".write": false,
+        ".validate": "newData.isString() && newData.val().length === 64"
+      },
+      "sigma": {
+        ".read": true,
+        ".write": false,
+        ".validate": "newData.isString() && newData.val().length === 64"
+      }
+    },
+    "progress": {
+      "$id": {
+        ".read": "auth != null",
+        ".write": "auth != null && !data.exists()",
+        ".validate": "$id.matches(/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{16}$/) && newData.hasChildren(['limit', 'uses', 'createdAt']) && newData.child('limit').val() === 1 && (!data.exists() ? newData.child('uses').val() === 0 : true)",
+        "limit": {
+          ".validate": "newData.isNumber() && newData.val() === 1"
+        },
+        "uses": {
+          ".write": "auth != null && ((!data.exists() && newData.isNumber() && newData.val() === 1) || (data.exists() && newData.isNumber() && newData.val() === data.val() + 1 && newData.val() <= 1))",
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1 && (!data.exists() || newData.val() >= data.val())"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        }
+      }
+    },
+    "transfers": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || !newData.exists())",
+        ".validate": "$code.matches(/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/) && (!newData.exists() || (newData.hasChildren(['v', 'owner', 'createdAt', 'expiresAt', 'payload']) && newData.child('v').val() === 1 && newData.child('owner').val() === auth.uid))",
+        "v": {
+          ".validate": "!newData.exists() || newData.isNumber()"
+        },
+        "owner": {
+          ".validate": "!newData.exists() || newData.isString()"
+        },
+        "createdAt": {
+          ".validate": "!newData.exists() || newData.isNumber()"
+        },
+        "expiresAt": {
+          ".validate": "!newData.exists() || newData.isNumber()"
+        },
+        "payload": {
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().length > 0 && newData.val().length <= 60000)"
+        }
+      }
+    },
+    "scores": {
+      ".read": "auth != null",
+      ".indexOn": ["score", "hardScore", "classicScore", "chaosScore", "normalClearMs", "hardClearMs", "classicClearMs", "chaosClearMs"],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name', 'score', 'hardScore'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 20"
+        },
+        "display": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
+        },
+        "score": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (!data.exists() || newData.val() >= data.val())"
+        },
+        "hardScore": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (!data.exists() || newData.val() >= data.val())"
+        },
+        "classicScore": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (!data.exists() || newData.val() >= data.val())"
+        },
+        "chaosScore": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (!data.exists() || newData.val() >= data.val())"
+        },
+        "normalClearMs": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 86400000 && (!data.exists() || newData.val() <= data.val())"
+        },
+        "hardClearMs": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 86400000 && (!data.exists() || newData.val() <= data.val())"
+        },
+        "classicClearMs": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 86400000 && (!data.exists() || newData.val() <= data.val())"
+        },
+        "chaosClearMs": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 86400000 && (!data.exists() || newData.val() <= data.val())"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "place": {
+          ".validate": "newData.isString() && newData.val().length <= 80"
+        },
+        "platform": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "normal": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "hard": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "chaos": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "classic": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "normalClear": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "hardClear": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "classicClear": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        },
+        "chaosClear": {
+          ".validate": "newData.hasChildren(['char', 'runes'])",
+          "char": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "runes": {
+            ".validate": "newData.isString() && newData.val().length <= 96"
+          },
+          "challenge": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          }
+        }
+      }
+    },
+    "charScores": {
+      ".read": "auth != null",
+      "$mode": {
+        ".validate": "$mode.matches(/^(normal|hard|classic|chaos)$/)",
+        "$char": {
+          ".indexOn": ["score", "clearMs"],
+          ".validate": "$char.matches(/^[A-Za-z0-9_-]{1,24}$/)",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.hasChildren(['name'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 20"
+            },
+            "display": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20"
+            },
+            "score": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (!data.exists() || newData.val() >= data.val())"
+            },
+            "clearMs": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 86400000 && (!data.exists() || newData.val() <= data.val())"
+            },
+            "runes": {
+              ".validate": "newData.isString() && newData.val().length <= 96"
+            },
+            "pet": {
+              ".validate": "newData.isString() && newData.val().length <= 24"
+            },
+            "challenge": {
+              ".validate": "newData.isString() && newData.val().length <= 24"
+            },
+            "clearRunes": {
+              ".validate": "newData.isString() && newData.val().length <= 96"
+            },
+            "clearPet": {
+              ".validate": "newData.isString() && newData.val().length <= 24"
+            },
+            "clearChallenge": {
+              ".validate": "newData.isString() && newData.val().length <= 24"
+            },
+            "place": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "platform": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber()"
+            }
+          }
+        }
+      }
+    }
+  }
+}
