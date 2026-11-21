@@ -37,6 +37,7 @@ function localPlayerCfg() {
 function resetRun(cfgs) {
   Game.mapIdx = 0; Game.loop = 0; Game.wave = 0;
   Game.score = 0; Game.kills = 0; Game.time = 0;
+  if (typeof RunTimer !== "undefined") RunTimer.start();   // the speedrun clock starts with the descent
   bloodfeast = 0; // Sancho Passive
   Game.bloodfeast = 0; // Sancho Passive
   Game.hitstop = 0; Game.flash = 0; Game.slowmo = 0; Game.ceremonyT = 0;

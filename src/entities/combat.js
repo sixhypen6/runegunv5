@@ -685,7 +685,11 @@ function bossSlain(e, killer) {
   ebullets.length = 0; for (let i = puddles.length - 1; i >= 0; i--) if (puddles[i].team === "e") puddles.splice(i, 1);
   for (let i = shockwaves.length - 1; i >= 0; i--) if (shockwaves[i].hostile) shockwaves.splice(i, 1);
   for (const rc of MAP.rocks) delete rc.meltAt;
-  if (e && e.kind === 4 && !Game.voidConquered) { Game.voidConquered = true; if (!(typeof Net !== "undefined" && Net.active)) { startEnding(); return; } }
+  if (e && e.kind === 4 && !Game.voidConquered) {
+    Game.voidConquered = true;
+    if (typeof RunTimer !== "undefined") RunTimer.finish();   // the descent is complete — freeze + bank the clear
+    if (!(typeof Net !== "undefined" && Net.active)) { startEnding(); return; }
+  }
   if (e) {
     for (let k = 0; k < 4; k++) shockwaves.push({ x: e.x, y: e.y, r: 10, max: 180 + k * 90, speed: 700, dmg: 0, hostile: false, color: e.color, hitSet: new Set(), delay: k * 0.12 });
     for (let k = 0; k < 30; k++) particles.push({ x: e.x, y: e.y, vx: rnd(-160, 160), vy: rnd(-330, -90), t: 0, life: rnd(0.6, 1.2), r: rnd(2, 5), color: "#ffd23d" });

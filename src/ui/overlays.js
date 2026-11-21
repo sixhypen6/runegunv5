@@ -924,6 +924,20 @@ function cycleJuice() {
 }
 $("btnJuice").addEventListener("click", cycleJuice);
 
+/* ---------- speedrun clock (visibility + best time; the clock itself lives in speedrun.js) ---------- */
+function applyRunTimerUI() {
+  const b = $("btnRunTimer"); if (b) b.textContent = "RUN TIMER: " + (Meta.runTimer ? "ON" : "OFF");
+  const box = $("runTimer"); if (box) box.classList.toggle("on", !!Meta.runTimer);
+}
+function toggleRunTimer() {
+  Meta.runTimer = !Meta.runTimer;
+  metaSave();
+  applyRunTimerUI();
+  if (typeof RunTimer !== "undefined") RunTimer.paint(true);
+  AudioFX.equip();
+}
+$("btnRunTimer").addEventListener("click", toggleRunTimer);
+
 /* ---------- on-screen controls (mobile): scheme · button layout · gestures ---------- */
 function applyCtrlSettingsUI() {
   const gestures = Meta.ctrlScheme === "gestures";
@@ -979,7 +993,7 @@ $("ctrlEditDone").addEventListener("click", () => closeCtrlEdit(true));
 $("ctrlEditReset").addEventListener("click", resetCtrlLayout);
 
 /* ---------- settings overlay ---------- */
-function openSettings() { syncVolumeUI(); applyDeskMode(); applyAimMode(); applyBtnSizeUI(); applyCtrlSettingsUI(); applyHapticsUI(); applyGlowUI(); applyJuiceUI(); syncPrivacyOptions(); $("btnReplayCutscene").style.display = (Game.state === "menu") ? "" : "none"; $("settings").classList.add("on"); }
+function openSettings() { syncVolumeUI(); applyDeskMode(); applyAimMode(); applyBtnSizeUI(); applyCtrlSettingsUI(); applyHapticsUI(); applyGlowUI(); applyJuiceUI(); applyRunTimerUI(); syncPrivacyOptions(); $("btnReplayCutscene").style.display = (Game.state === "menu") ? "" : "none"; $("settings").classList.add("on"); }
 function closeSettings() { $("settings").classList.remove("on"); }
 /* Google requires EEA/UK players to have a persistent way back to the consent
    choice. UMP tells us who needs one; everyone else never sees the button. */
@@ -1010,45 +1024,13 @@ $("btnReplayCutscene").addEventListener("click", () => {     // replay the full 
 });
 $("btnLeaderboard").addEventListener("click", openLeaderboard);
 
-/* ---------- secret console access ---------- */
-let secretCode = "";
-let secretTapCount = 0;
-$("secretConsoleTrigger").addEventListener("click", () => {
-  secretTapCount++;
-  if (secretTapCount >= 10) {
-    secretTapCount = 0;
-    secretCode = "";
-    $("secretCodeDisplay").textContent = "····";
-    $("secretCodeEntry").classList.add("on");
-  } else {
-    // optional: brief visual feedback for taps?
-    const el = $("secretConsoleTrigger");
-    el.style.transform = "scale(0.9)";
-    setTimeout(() => el.style.transform = "", 100);
-    toast((10 - secretTapCount) + " TAPS REMAINING", true);
+/* ---------- open the run console from the settings panel ---------- */
+$("btnConsole").addEventListener("click", () => {
+  if (typeof RunegunConsole !== "undefined") {
+    closeSettings();
+    RunegunConsole.toggle(true);
   }
 });
-$("secretPad").addEventListener("click", e => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
-  if (btn.id === "secretPadClear") {
-    secretCode = "";
-  } else {
-    if (secretCode.length < 4) secretCode += btn.textContent;
-  }
-  $("secretCodeDisplay").textContent = secretCode.padEnd(4, "·");
-  if (secretCode === "0000") {
-    const entry = $("secretCodeEntry");
-    if (entry) entry.classList.remove("on");
-    if (window.DebugConsole) DebugConsole.toggle();
-    else {
-      const console = $("debugConsole");
-      if (console) console.classList.toggle("active");
-    }
-    secretCode = "";
-  }
-});
-$("secretCodeBack").addEventListener("click", () => $("secretCodeEntry").classList.remove("on"));
 
 /* ---------- menu / death ---------- */
 function refreshMenu() {

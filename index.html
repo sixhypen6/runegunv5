@@ -43,6 +43,11 @@
     .wave-wrap{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);text-align:center}
     #waveNum{font-size:22px;letter-spacing:.35em;text-shadow:0 0 12px rgba(157,107,255,.7)}
     #mapName{font-size:10px;letter-spacing:.3em;color:var(--dim)}
+#runTimer{display:none;flex-direction:column;align-items:center;gap:1px;margin-top:7px;font-variant-numeric:tabular-nums}
+#runTimer.on{display:flex}
+#runClock{font-size:15px;letter-spacing:.15em;color:var(--bone);text-shadow:0 0 10px rgba(157,107,255,.5)}
+#runClock.done{color:var(--gold)}
+#runBest{font-size:9px;letter-spacing:.2em;color:var(--dim)}
     #sealCount{font-size:10px;letter-spacing:.25em;color:var(--arcane);margin-top:2px}
     /* vitality caches — same line style as the seal tally, in the heal green */
     #vitalCount{font-size:10px;letter-spacing:.25em;color:#7dff5e;margin-top:2px;opacity:.85}
@@ -497,6 +502,7 @@
     <div id="mapName">THE CATACOMB</div>
     <div id="sealCount">SEALS 0 / 4</div>
     <div id="vitalCount">VITALS 2 / 2</div>
+    <div id="runTimer"><div id="runClock">0:00.000</div><div id="runBest"></div></div>
   </div>
   <div class="score-wrap" id="scoreWrap">
     <div id="score">0</div><div class="score-label">SOULS</div>
@@ -832,15 +838,20 @@
       <label style="font-size:10px;letter-spacing:.3em;color:var(--dim)">FEEDBACK</label>
       <button class="menu-btn small" id="btnHaptics" style="border-color:var(--frost);color:var(--frost);margin-top:8px">VIBRATION: ON</button>
     </div>
-    <div class="aim-mode-row" id="glowRow" style="margin-top:18px">
+    <div id="glowRow" style="margin-top:18px;display:flex;flex-direction:column;align-items:center">
       <label style="font-size:10px;letter-spacing:.3em;color:var(--dim)">GLOW</label>
       <button class="menu-btn small" id="btnGlow" style="border-color:var(--frost);color:var(--frost);margin-top:8px">GLOW: FULL</button>
       <div class="aim-mode-note" id="glowNote">the intended look — every halo at full strength</div>
     </div>
-    <div class="aim-mode-row" id="juiceRow" style="margin-top:18px">
+    <div id="juiceRow" style="margin-top:18px;display:flex;flex-direction:column;align-items:center">
       <label style="font-size:10px;letter-spacing:.3em;color:var(--dim)">KILL FEEDBACK</label>
       <button class="menu-btn small" id="btnJuice" style="border-color:var(--frost);color:var(--frost);margin-top:8px">KILL FEEDBACK: FULL</button>
       <div class="aim-mode-note" id="juiceNote">streak callouts, soul motes and screen flashes — the intended feel</div>
+    </div>
+    <div id="runTimerRow" style="margin-top:18px;display:flex;flex-direction:column;align-items:center">
+      <label style="font-size:10px;letter-spacing:.3em;color:var(--dim)">SPEEDRUN</label>
+      <button class="menu-btn small" id="btnRunTimer" style="border-color:var(--frost);color:var(--frost);margin-top:8px">RUN TIMER: ON</button>
+      <div class="aim-mode-note" id="runTimerNote">millisecond run clock · pauses with the game · keeps your fastest clear per warden and mode</div>
     </div>
     <div id="deskCtrlRow" style="margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:8px">
       <label style="font-size:10px;letter-spacing:.3em;color:var(--dim)">AIMING &amp; FIRING</label>
@@ -865,30 +876,17 @@
         <div class="aim-mode-note" id="gestureNote">tap the screen to seal · double-tap to dash · best with auto-aim</div>
       </div>
     </div>
+    <div id="consoleRow2" style="display:flex;flex-direction:column;align-items:center;margin-top:18px">
+      <label style="font-size:10px;letter-spacing:.3em;color:var(--dim)">RUN CONSOLE</label>
+      <button class="menu-btn small" id="btnConsole" style="border-color:var(--frost);color:var(--frost);margin-top:8px">OPEN CONSOLE</button>
+      <div class="aim-mode-note" id="consoleNote">F9 / backtick on desktop · type help for the full command list</div>
+    </div>
     <!-- Shown only where UMP reports the privacy-options entry point is REQUIRED
          (EEA/UK). Google mandates a persistent way to change ad consent. -->
     <button class="menu-btn small" id="btnPrivacyOptions" style="width:100%;margin-top:24px;display:none">AD PRIVACY OPTIONS</button>
     <button class="menu-btn small" id="btnReplayCutscene" style="width:100%;margin-top:24px">REPLAY OPENING</button>
     <button class="menu-btn small" id="btnHowToPlay" style="width:100%;margin-top:10px">HOW TO PLAY</button>
     <button class="menu-btn small" id="settingsClose" style="width:100%;margin-top:10px">CLOSE</button>
-  </div>
-  <div id="secretConsoleTrigger" style="position:absolute;bottom:20px;right:20px;width:60px;height:60px;z-index:100;cursor:pointer;border-radius:50%;background:rgba(157,107,255,0.2);border:2px solid var(--arcane);display:flex;align-items:center;justify-content:center;color:var(--arcane);font-size:10px;font-weight:bold">ADMIN</div>
-</div>
-
-<!-- SECRET CODE ENTRY -->
-<div class="overlay" id="secretCodeEntry" style="z-index:50;background:rgba(7,6,14,.95)">
-  <div class="panel" style="width:min(320px,90vw);text-align:center">
-    <h2>THE GATEKEEPER</h2>
-    <div class="hint">speak the four-mark code</div>
-    <div class="coop-code" id="secretCodeDisplay">····</div>
-    <div class="coop-pad" id="secretPad">
-      <button>1</button><button>2</button><button>3</button>
-      <button>4</button><button>5</button><button>6</button>
-      <button>7</button><button>8</button><button>9</button>
-      <button class="wide" id="secretPadClear">CLEAR</button>
-      <button>0</button>
-    </div>
-    <button class="menu-btn small" id="secretCodeBack" style="width:100%;margin-top:14px">RETURN</button>
   </div>
 </div>
 
@@ -929,6 +927,7 @@
 <script src="src/game/update.js"></script>
 <script src="src/render/draw.js"></script>
 <script src="src/systems/juice.js"></script>
+<script src="src/systems/speedrun.js"></script>
 <script src="src/ui/hud.js"></script>
 <script src="src/scenes/ending.js"></script>
 <script src="src/scenes/rift.js"></script>

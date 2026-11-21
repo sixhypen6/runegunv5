@@ -51,6 +51,8 @@ const Meta = {
     wave: 0,                // max wave on hard
     depth: 0,               // max depth on hard
   },
+runTimer: true,           // show the speedrun clock in the HUD
+  speedBests: {},           // per-warden clear times, keyed "<char>" / "<char>:hard"
 };
 const SAVE_KEY = "runegun.meta.v2";
 let storageOk = true;
@@ -105,6 +107,8 @@ function metaLoad() {
         for (const k in Meta.bestsHard)
           if (typeof d.bestsHard[k] === "number" && d.bestsHard[k] >= 0) Meta.bestsHard[k] = d.bestsHard[k];
       }
+      if (d.runTimer !== undefined) Meta.runTimer = !!d.runTimer;
+      if (d.speedBests && typeof d.speedBests === "object") Object.assign(Meta.speedBests, d.speedBests);
       // TODO: Remove for production
       Meta.bank = Math.max(Meta.bank, 1000000);
       Meta.unlocked["npc:keeper"] = true;

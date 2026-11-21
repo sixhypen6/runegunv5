@@ -17,6 +17,7 @@ document.body.classList.toggle("juiceOff", Meta.juice === "off");
 refreshMenu();
 applyButtonSize();   // set the --tbtn size var + clamp bounds before first layout/paint
 applyCtrlScheme();   // apply saved on-screen control scheme + custom button layout
+if (typeof applyRunTimerUI === "function") applyRunTimerUI();   // speedrun clock visibility from the save
 
 let last = performance.now();
 let bgSkip = 0, bgDt = 0;   // menu-backdrop throttle behind near-opaque overlays
@@ -29,6 +30,7 @@ function frame(now) {
   try {
     let dt = Math.min((now - last) / 1000, 0.05);
     last = now;
+    if (typeof RunTimer !== "undefined") RunTimer.tick(dt);   // speedrun clock (frozen unless the descent is live)
     if (Game.state === "cutscene") { cutsceneFrame(dt); }
     else if (Game.state === "vaultcut") { vaultCutsceneFrame(dt); }
     else if (Game.state === "tutorial") { tutorialFrame(dt); }
